@@ -3,6 +3,7 @@ package ru.kavyrshin.rianews;
 import android.app.Application;
 
 import ru.kavyrshin.rianews.di.global.ApplicationComponent;
+import ru.kavyrshin.rianews.di.global.DaggerApplicationComponent;
 
 public class RiaNewsApplication extends Application {
 
