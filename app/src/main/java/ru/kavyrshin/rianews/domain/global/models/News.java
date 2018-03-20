@@ -6,7 +6,7 @@ public class News {
     private String name;
     private int unixtime;
     private String imgUrl;
-    private String category;
+    private Category category;
     private String text;
 
     public String getUrl() {
@@ -41,11 +41,11 @@ public class News {
         this.imgUrl = imgUrl;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
