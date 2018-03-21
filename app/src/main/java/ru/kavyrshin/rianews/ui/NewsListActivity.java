@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -30,9 +30,7 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
-    private Button btn;
-
-    int count = 0;
+    private RecyclerView rvNewsList;
 
     @InjectPresenter
     NewsListPresenter presenter;
@@ -50,6 +48,10 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = (NavigationView) findViewById(R.id.navigationView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        rvNewsList = (RecyclerView) findViewById(R.id.rvNewsList);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rvNewsList.setLayoutManager(linearLayoutManager);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.opened_navigation_view, R.string.closed_navigation_view);
@@ -58,20 +60,13 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
         navigationView.setNavigationItemSelectedListener(this);
         actionBarDrawerToggle.syncState();
 
-
-        btn = (Button) findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigationView.getMenu().add(0, count, count, "item " + count).setCheckable(true);
-                count++;
-            }
-        });
     }
 
     @Override
     public void showCategories(List<Category> listCategories) {
-
+        for (int i = 0; i < listCategories.size(); i++) {
+            navigationView.getMenu().add(0, i, i, listCategories.get(i).getName()).setCheckable(true);
+        }
     }
 
     @Override
@@ -81,7 +76,7 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
 
     @Override
     public void showError(String message) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
