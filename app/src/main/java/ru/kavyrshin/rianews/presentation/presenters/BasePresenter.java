@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable;
 
 public class BasePresenter<View extends MvpView> extends MvpPresenter<View> {
 
-    private CompositeDisposable compositeDisposable;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public void unsubscribeOnDestroy(Disposable disposable) {
         compositeDisposable.add(disposable);
