@@ -4,11 +4,17 @@ package ru.kavyrshin.rianews.data.repositories;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 import ru.kavyrshin.rianews.domain.global.models.Category;
 import ru.kavyrshin.rianews.domain.global.repositories.ICategoriesRepository;
 
 public class CategoriesRepository implements ICategoriesRepository {
+
+    @Inject
+    public CategoriesRepository() {
+    }
 
     @Override
     public Single<List<Category>> getAllCategories() {
