@@ -6,9 +6,11 @@ import dagger.BindsInstance;
 import dagger.Component;
 import ru.kavyrshin.rianews.RiaNewsApplication;
 import ru.kavyrshin.rianews.di.NewsListComponent;
+import ru.kavyrshin.rianews.di.global.modules.ApplicationModule;
+import ru.kavyrshin.rianews.di.global.modules.DataModule;
 
 @Singleton
-@Component
+@Component(modules = {ApplicationModule.class, DataModule.class})
 public interface ApplicationComponent {
 
     @Component.Builder
