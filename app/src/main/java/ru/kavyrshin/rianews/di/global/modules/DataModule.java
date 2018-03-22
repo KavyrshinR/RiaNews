@@ -5,7 +5,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 import ru.kavyrshin.rianews.data.repositories.CategoriesRepository;
+import ru.kavyrshin.rianews.data.repositories.NewsRepository;
 import ru.kavyrshin.rianews.domain.global.repositories.ICategoriesRepository;
+import ru.kavyrshin.rianews.domain.global.repositories.INewsRepository;
 
 @Module
 public class DataModule {
@@ -17,4 +19,9 @@ public class DataModule {
     }
 
 
+    @Reusable
+    @Provides
+    public INewsRepository provideNewsRepository(NewsRepository newsRepository) {
+        return newsRepository;
+    }
 }
