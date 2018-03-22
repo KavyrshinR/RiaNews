@@ -67,6 +67,8 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
         for (int i = 0; i < listCategories.size(); i++) {
             navigationView.getMenu().add(0, i, i, listCategories.get(i).getName()).setCheckable(true);
         }
+
+        navigationView.setCheckedItem(0);
     }
 
     @Override
