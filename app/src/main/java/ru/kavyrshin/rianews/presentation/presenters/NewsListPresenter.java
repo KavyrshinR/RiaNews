@@ -37,6 +37,7 @@ public class NewsListPresenter extends BasePresenter<NewsListView> {
                         @Override
                         public void onSuccess(List<Category> categories) {
                             getViewState().showCategories(categories);
+                            getCategorizedNewsById(categories.get(0).getId());
                         }
 
                         @Override
