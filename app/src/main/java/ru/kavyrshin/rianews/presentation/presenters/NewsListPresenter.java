@@ -8,18 +8,19 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
-import ru.kavyrshin.rianews.domain.CategoriesInteractor;
+import ru.kavyrshin.rianews.domain.CategoriedNewsInteractor;
 import ru.kavyrshin.rianews.domain.global.models.Category;
+import ru.kavyrshin.rianews.domain.global.models.News;
 import ru.kavyrshin.rianews.presentation.views.NewsListView;
 
 @InjectViewState
 public class NewsListPresenter extends BasePresenter<NewsListView> {
 
-    private CategoriesInteractor categoriesInteractor;
+    private CategoriedNewsInteractor categoriedNewsInteractor;
 
     @Inject
-    public NewsListPresenter(CategoriesInteractor categoriesInteractor) {
-        this.categoriesInteractor = categoriesInteractor;
+    public NewsListPresenter(CategoriedNewsInteractor categoriedNewsInteractor) {
+        this.categoriedNewsInteractor = categoriedNewsInteractor;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class NewsListPresenter extends BasePresenter<NewsListView> {
 
     public void getAllNewsCategories() {
         unsubscribeOnDestroy(
-            categoriesInteractor.getAllCategories()
+            categoriedNewsInteractor.getAllCategories()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(new DisposableSingleObserver<List<Category>>() {
                         @Override
@@ -43,6 +44,24 @@ public class NewsListPresenter extends BasePresenter<NewsListView> {
                             getViewState().showError(e.getMessage());
                         }
                     })
+        );
+    }
+
+    public void getCategorizedNewsById(int id) {
+        unsubscribeOnDestroy(
+            categoriedNewsInteractor.getNewsByCategory(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<News>>() {
+                    @Override
+                    public void onSuccess(List<News> news) {
+                        getViewState().showNews(news);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getViewState().showError(e.getMessage());
+                    }
+                })
         );
     }
 }

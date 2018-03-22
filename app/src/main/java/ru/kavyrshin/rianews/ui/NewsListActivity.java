@@ -22,8 +22,11 @@ import ru.kavyrshin.rianews.domain.global.models.Category;
 import ru.kavyrshin.rianews.domain.global.models.News;
 import ru.kavyrshin.rianews.presentation.presenters.NewsListPresenter;
 import ru.kavyrshin.rianews.presentation.views.NewsListView;
+import ru.kavyrshin.rianews.ui.adapters.NewsListAdapter;
 
-public class NewsListActivity extends BaseActivity implements NewsListView, NavigationView.OnNavigationItemSelectedListener {
+public class NewsListActivity extends BaseActivity implements NewsListView,
+        NavigationView.OnNavigationItemSelectedListener,
+        NewsListAdapter.NewsListAdapterListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -31,6 +34,7 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     private RecyclerView rvNewsList;
+    private NewsListAdapter newsListAdapter;
 
     @InjectPresenter
     NewsListPresenter presenter;
@@ -50,8 +54,10 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         rvNewsList = (RecyclerView) findViewById(R.id.rvNewsList);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        newsListAdapter = new NewsListAdapter(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvNewsList.setLayoutManager(linearLayoutManager);
+        rvNewsList.setAdapter(newsListAdapter);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.opened_navigation_view, R.string.closed_navigation_view);
@@ -65,7 +71,9 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
     @Override
     public void showCategories(List<Category> listCategories) {
         for (int i = 0; i < listCategories.size(); i++) {
-            navigationView.getMenu().add(0, i, i, listCategories.get(i).getName()).setCheckable(true);
+            navigationView.getMenu()
+                    .add(0, listCategories.get(i).getId(), i, listCategories.get(i).getName())
+                    .setCheckable(true);
         }
 
         navigationView.setCheckedItem(0);
@@ -73,7 +81,8 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
 
     @Override
     public void showNews(List<News> listNews) {
-
+        newsListAdapter.clearNewsArrayList();
+        newsListAdapter.setNewsArrayList(listNews);
     }
 
     @Override
@@ -92,8 +101,15 @@ public class NewsListActivity extends BaseActivity implements NewsListView, Navi
     }
 
     @Override
+    public void onNewsClick(String url) {
+        Toast.makeText(this, "url " + url, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Toast.makeText(this, "menuItem " + item.getItemId(), Toast.LENGTH_SHORT).show();
+
+        presenter.getCategorizedNewsById(item.getItemId());
 
         drawerLayout.closeDrawer(Gravity.START);
         return true;
