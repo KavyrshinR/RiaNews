@@ -26,9 +26,13 @@ public class JSoupRiaNews {
                 for (Element element : categoriesHtml) {
                     Category category = new Category();
                     category.setName(element.select("a[href]").first().select("span").first().text());
-                    category.setUrl("ria.ru" + element.select("a[href]").first().attr("href"));
-                    categories.add(category);
+                    category.setUrl("http://ria.ru" + element.select("a[href]").first().attr("href"));
+
+                    if (!category.getUrl().contains("rsport")) {
+                        categories.add(category);
+                    }
                 }
+                categories.get(0).setUrl(categories.get(0) + "lenta");
 
                 return categories;
             }
