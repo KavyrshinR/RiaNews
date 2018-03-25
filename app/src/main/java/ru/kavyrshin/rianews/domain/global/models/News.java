@@ -2,12 +2,21 @@ package ru.kavyrshin.rianews.domain.global.models;
 
 public class News {
 
+    private int id;
     private String url;
     private String name;
     private int unixtime;
     private String imgUrl;
     private Category category;
     private String text;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUrl() {
         return url;
