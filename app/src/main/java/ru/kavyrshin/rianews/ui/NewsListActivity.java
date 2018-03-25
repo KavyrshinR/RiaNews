@@ -1,5 +1,6 @@
 package ru.kavyrshin.rianews.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -101,8 +102,11 @@ public class NewsListActivity extends BaseActivity implements NewsListView,
     }
 
     @Override
-    public void onNewsClick(String url) {
-        Toast.makeText(this, "url " + url, Toast.LENGTH_SHORT).show();
+    public void onNewsClick(int newsId) {
+        Toast.makeText(this, "id " + newsId, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, DetailedActivity.class);
+        intent.putExtra(DetailedActivity.NEWS_ID_EXTRA, newsId);
+        startActivity(intent);
     }
 
     @Override

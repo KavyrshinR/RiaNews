@@ -20,7 +20,7 @@ import ru.kavyrshin.rianews.domain.global.models.News;
 public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface NewsListAdapterListener {
-        void onNewsClick(String url);
+        void onNewsClick(int id);
     }
 
     public static final int NEWS_VIEW_TYPE = 123;
@@ -93,11 +93,15 @@ public class NewsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Picasso.get().load(news.getImgUrl()).into(imageView);
             tvTitle.setText(news.getName());
+            tvSubTitle.setText(news.getCategory().getName());
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-
+            if (listener != null) {
+                listener.onNewsClick(news.getId());
+            }
         }
     }
 
