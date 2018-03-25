@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import ru.kavyrshin.rianews.RiaNewsApplication;
+import ru.kavyrshin.rianews.di.DetailedNewsComponent;
 import ru.kavyrshin.rianews.di.NewsListComponent;
 import ru.kavyrshin.rianews.di.global.modules.ApplicationModule;
 import ru.kavyrshin.rianews.di.global.modules.DataModule;
@@ -24,4 +25,5 @@ public interface ApplicationComponent {
 
 
     NewsListComponent.Builder newsListComponent();
+    DetailedNewsComponent.Builder detailedNewsComponent();
 }
