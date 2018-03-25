@@ -29,7 +29,7 @@ public class CategoriesRepository implements ICategoriesRepository {
                     @Override
                     public List<Category> apply(List<Category> categories) throws Exception {
                         for (int i = 0; i < categories.size(); i++) {
-                            categories.get(i).setId(i);
+                            categories.get(i).setId(categories.get(i).getUrl().hashCode());
                         }
                         CategoriesRepository.this.categories = categories;
                         return categories;
