@@ -38,4 +38,9 @@ public class CategoriedNewsInteractor {
                     }
                 }).subscribeOn(Schedulers.io());
     }
+
+    public Single<News> getDetailedNews(int id) {
+        return newsRepository.getDetailedNews(id)
+                .subscribeOn(Schedulers.io());
+    }
 }
