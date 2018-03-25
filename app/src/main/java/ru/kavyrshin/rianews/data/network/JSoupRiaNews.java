@@ -1,12 +1,16 @@
 package ru.kavyrshin.rianews.data.network;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
@@ -14,6 +18,8 @@ import ru.kavyrshin.rianews.domain.global.models.Category;
 import ru.kavyrshin.rianews.domain.global.models.News;
 
 public class JSoupRiaNews {
+
+    private SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault());
 
     public Single<List<Category>> getAllCategories() {
         return Single.fromCallable(new Callable<List<Category>>() {
@@ -84,6 +90,22 @@ public class JSoupRiaNews {
                 }
 
                 return newsList;
+            }
+        });
+    }
+
+    public Single<News> getDetailedNews(final News news) {
+        return Single.fromCallable(new Callable<News>() {
+            @Override
+            public News call() throws Exception {
+                Document newsHtml = Jsoup.connect(news.getUrl()).get();
+                Element text = newsHtml.selectFirst("div.b-article__body");
+                news.setText(text.html());
+                news.setBigImgUrl(newsHtml.selectFirst("div.l-photoview__open").selectFirst("img").attr("src"));
+                String textDate = newsHtml.selectFirst("div.b-article__info-date").attr("datetime");
+                Date dateTime = dateParser.parse(textDate);
+                news.setUnixtime(dateTime.getTime());
+                return news;
             }
         });
     }

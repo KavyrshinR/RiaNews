@@ -9,4 +9,5 @@ import ru.kavyrshin.rianews.domain.global.models.News;
 
 public interface INewsRepository {
     Single<List<News>> getNewsByCategory(Category category);
+    Single<News> getDetailedNews(int newsId);
 }
