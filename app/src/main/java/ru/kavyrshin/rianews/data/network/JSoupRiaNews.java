@@ -99,8 +99,8 @@ public class JSoupRiaNews {
             @Override
             public News call() throws Exception {
                 Document newsHtml = Jsoup.connect(news.getUrl()).get();
-                Element text = newsHtml.selectFirst("div.b-article__body");
-                news.setText(text.html());
+                Elements text = newsHtml.select("div.b-article__body > p");
+                news.setText(text.outerHtml());
                 news.setBigImgUrl(newsHtml.selectFirst("div.l-photoview__open").selectFirst("img").attr("src"));
                 String textDate = newsHtml.selectFirst("div.b-article__info-date").attr("datetime");
                 Date dateTime = dateParser.parse(textDate);
