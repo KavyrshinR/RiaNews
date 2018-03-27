@@ -115,4 +115,19 @@ public class NewsDataBase {
             return Completable.error(new RuntimeException("Delete error"));
         }
     }
+
+    public Completable deleteNewsByCategory(Category category) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<News> realmResults = realm.where(News.class).equalTo("category.id", category.getId()).findAll();
+        boolean result = realmResults.deleteAllFromRealm();
+        realm.commitTransaction();
+        realm.close();
+
+        if (result) {
+            return Completable.complete();
+        } else {
+            return Completable.error(new RuntimeException("Delete error"));
+        }
+    }
 }
