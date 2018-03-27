@@ -74,7 +74,7 @@ public class DetailedActivity extends BaseActivity implements DetailedNewsView {
         imageLayout.setLayoutParams(new LinearLayout.LayoutParams(displayMetrics.widthPixels, displayMetrics.heightPixels/3));
 
         Picasso.get()
-                .load(news.getBigImgUrl())
+                .load(news.getBigImgUrl() != null ? news.getBigImgUrl() : news.getImgUrl())
                 .into(imageView);
 
         tvTitle.setText(news.getName());
