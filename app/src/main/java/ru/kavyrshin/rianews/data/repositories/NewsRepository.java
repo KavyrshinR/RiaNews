@@ -37,10 +37,9 @@ public class NewsRepository implements INewsRepository {
                             item.setId(item.getUrl().hashCode());
                         }
 
-                        newsDataBase.deleteNewsByCategory(category);
-                        newsDataBase.saveNewsList(news);
-
-                        return newsDataBase.getNewsByCategory(category);
+                        return newsDataBase.deleteNewsByCategory(category)
+                                .andThen(newsDataBase.saveNewsList(news)
+                                .andThen(Single.just(news)));
                     }
                 }).onErrorResumeNext(newsDataBase.getNewsByCategory(category));
     }

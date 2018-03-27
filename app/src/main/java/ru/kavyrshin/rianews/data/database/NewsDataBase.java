@@ -47,11 +47,15 @@ public class NewsDataBase {
     public Completable saveNewsList(List<News> newsList) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        realm.copyToRealmOrUpdate(newsList);
+        List<News> result = realm.copyToRealmOrUpdate(newsList);
         realm.commitTransaction();
         realm.close();
 
-        return Completable.complete();
+        if (!result.isEmpty()) {
+            return Completable.complete();
+        } else {
+            return Completable.error(new RuntimeException("Delete error"));
+        }
     }
 
     public Completable deleteAllCategories() {
@@ -121,6 +125,9 @@ public class NewsDataBase {
         realm.beginTransaction();
         RealmResults<News> realmResults = realm.where(News.class).equalTo("category.id", category.getId()).findAll();
         boolean result = realmResults.deleteAllFromRealm();
+
+        result = result || realmResults.isEmpty();
+
         realm.commitTransaction();
         realm.close();
 
