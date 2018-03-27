@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -33,6 +34,7 @@ public class NewsListActivity extends BaseActivity implements NewsListView,
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private TextView tvToolbar;
 
     private RecyclerView rvNewsList;
     private NewsListAdapter newsListAdapter;
@@ -54,6 +56,9 @@ public class NewsListActivity extends BaseActivity implements NewsListView,
         navigationView = (NavigationView) findViewById(R.id.navigationView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         rvNewsList = (RecyclerView) findViewById(R.id.rvNewsList);
+        tvToolbar = (TextView) toolbar.findViewById(R.id.tvOut);
+
+        setSupportActionBar(toolbar);
 
         newsListAdapter = new NewsListAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -70,6 +75,14 @@ public class NewsListActivity extends BaseActivity implements NewsListView,
     }
 
     @Override
+    public void setTitle(CharSequence title) {
+        if (getSupportActionBar() != null) {
+            tvToolbar.setText(title);
+        }
+        super.setTitle(title);
+    }
+
+    @Override
     public void showCategories(List<Category> listCategories) {
         for (int i = 0; i < listCategories.size(); i++) {
             navigationView.getMenu()
@@ -77,13 +90,14 @@ public class NewsListActivity extends BaseActivity implements NewsListView,
                     .setCheckable(true);
         }
 
-        navigationView.setCheckedItem(0);
+        navigationView.setCheckedItem(listCategories.get(0).getId());
     }
 
     @Override
     public void showNews(List<News> listNews) {
         newsListAdapter.clearNewsArrayList();
         newsListAdapter.setNewsArrayList(listNews);
+        setTitle(listNews.get(0).getCategory().getName());
     }
 
     @Override
