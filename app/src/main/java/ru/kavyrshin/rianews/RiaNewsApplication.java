@@ -2,6 +2,8 @@ package ru.kavyrshin.rianews;
 
 import android.app.Application;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import ru.kavyrshin.rianews.di.global.ApplicationComponent;
 import ru.kavyrshin.rianews.di.global.DaggerApplicationComponent;
 
@@ -12,6 +14,10 @@ public class RiaNewsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(realmConfig);
 
         applicationComponent = DaggerApplicationComponent.builder().application(this).build();
     }
