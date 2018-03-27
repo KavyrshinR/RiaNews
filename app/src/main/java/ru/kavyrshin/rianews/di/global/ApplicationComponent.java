@@ -9,10 +9,11 @@ import ru.kavyrshin.rianews.di.DetailedNewsComponent;
 import ru.kavyrshin.rianews.di.NewsListComponent;
 import ru.kavyrshin.rianews.di.global.modules.ApplicationModule;
 import ru.kavyrshin.rianews.di.global.modules.DataModule;
+import ru.kavyrshin.rianews.di.global.modules.DatabaseModule;
 import ru.kavyrshin.rianews.di.global.modules.NetworkModule;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, DataModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, DatabaseModule.class, DataModule.class})
 public interface ApplicationComponent {
 
     @Component.Builder
