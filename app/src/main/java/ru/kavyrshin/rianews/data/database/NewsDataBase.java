@@ -1,56 +1,118 @@
 package ru.kavyrshin.rianews.data.database;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import ru.kavyrshin.rianews.domain.global.models.Category;
 import ru.kavyrshin.rianews.domain.global.models.News;
 
 public class NewsDataBase {
 
-    private static NewsDataBase newsDataBase;
+    public Completable saveCategories(List<Category> categories) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(categories);
+        realm.commitTransaction();
+        realm.close();
 
-
-    private List<News> newsList = new ArrayList<>();
-
-    public static NewsDataBase getInstance() {
-        if (newsDataBase == null) {
-            newsDataBase = new NewsDataBase();
-        }
-
-        return newsDataBase;
+        return Completable.complete();
     }
 
-    public Single<List<News>> getNewsByCategory(Category category) {
-        List<News> resultList = new ArrayList<>();
-
-        for (News item : newsList) {
-            if (item.getCategory().getId() == category.getId()) {
-                resultList.add(item);
-            }
-        }
+    public Single<List<Category>> getCategoriesList() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<Category> realmResults = realm.where(Category.class).findAll();
+        List<Category> resultList = realm.copyFromRealm(realmResults);
+        realm.commitTransaction();
+        realm.close();
 
         return Single.just(resultList);
     }
 
-    public Single<News> getNewsById(int newsId) {
-        News result = null;
-
-        for (News item : newsList) {
-            if (item.getId() == newsId) {
-                result = item;
-            }
-        }
+    public Single<Category> getCategoryById(int categoryId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Category temp = realm.where(Category.class).equalTo("id", categoryId).findFirst();
+        Category result = realm.copyFromRealm(temp);
+        realm.commitTransaction();
+        realm.close();
 
         return Single.just(result);
     }
 
     public Completable saveNewsList(List<News> newsList) {
-        this.newsList = newsList;
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(newsList);
+        realm.commitTransaction();
+        realm.close();
+
         return Completable.complete();
     }
 
+    public Completable deleteAllCategories() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults realmResults = realm.where(Category.class).findAll();
+        boolean result = realmResults.deleteAllFromRealm();
+        realm.commitTransaction();
+        realm.close();
+
+        if (result) {
+            return Completable.complete();
+        } else {
+            return Completable.error(new RuntimeException("Delete error"));
+        }
+    }
+
+    public Single<List<News>> getNewsByCategory(Category category) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<News> realmResults = realm.where(News.class).equalTo("category.id", category.getId()).findAll();
+        List<News> resultList = realm.copyFromRealm(realmResults);
+        realm.commitTransaction();
+        realm.close();
+
+        return Single.just(resultList);
+    }
+
+    public Completable saveNews(News news) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(news);
+        realm.commitTransaction();
+        realm.close();
+
+        return Completable.complete();
+    }
+
+    public Single<News> getNewsById(int newsId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        News temp = realm.where(News.class).equalTo("id", newsId).findFirst();
+        News result = realm.copyFromRealm(temp);
+        realm.commitTransaction();
+        realm.close();
+
+        return Single.just(result);
+    }
+
+    public Completable deleteAllNews() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmResults<News> realmResults = realm.where(News.class).findAll();
+        boolean result = realmResults.deleteAllFromRealm();
+        realm.commitTransaction();
+        realm.close();
+
+        if (result) {
+            return Completable.complete();
+        } else {
+            return Completable.error(new RuntimeException("Delete error"));
+        }
+    }
 }
