@@ -1,7 +1,11 @@
 package ru.kavyrshin.rianews.domain.global.models;
 
-public class News {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
+public class News extends RealmObject {
+
+    @PrimaryKey
     private int id;
     private String url;
     private String name;
