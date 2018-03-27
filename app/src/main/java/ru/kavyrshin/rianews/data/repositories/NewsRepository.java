@@ -18,15 +18,17 @@ public class NewsRepository implements INewsRepository {
 
 
     private JSoupRiaNews parser;
+    private NewsDataBase newsDataBase;
 
 
     @Inject
-    public NewsRepository(JSoupRiaNews parser) {
+    public NewsRepository(JSoupRiaNews parser, NewsDataBase newsDataBase) {
         this.parser = parser;
+        this.newsDataBase = newsDataBase;
     }
 
     @Override
-    public Single<List<News>> getNewsByCategory(Category category) {
+    public Single<List<News>> getNewsByCategory(final Category category) {
         return parser.getNewsByCategory(category)
                 .flatMap(new Function<List<News>, SingleSource<List<News>>>() {
                     @Override
@@ -35,20 +37,28 @@ public class NewsRepository implements INewsRepository {
                             item.setId(item.getUrl().hashCode());
                         }
 
-                        NewsDataBase.getInstance().saveNewsList(news);
+                        newsDataBase.deleteAllNews();
+                        newsDataBase.saveNewsList(news);
 
-                        return Single.just(news);
+                        return newsDataBase.getNewsByCategory(category);
                     }
-                });
+                }).onErrorResumeNext(newsDataBase.getNewsByCategory(category));
     }
 
     @Override
     public Single<News> getDetailedNews(int newsId) {
-        return NewsDataBase.getInstance().getNewsById(newsId)
+        return newsDataBase.getNewsById(newsId)
                 .flatMap(new Function<News, SingleSource<News>>() {
                     @Override
                     public SingleSource<News> apply(News news) throws Exception {
-                        return parser.getDetailedNews(news);
+                        return parser.getDetailedNews(news)
+                                .flatMap(new Function<News, SingleSource<News>>() {
+                                    @Override
+                                    public SingleSource<News> apply(News news) throws Exception {
+                                        newsDataBase.saveNews(news);
+                                        return newsDataBase.getNewsById(news.getId());
+                                    }
+                                }).onErrorResumeNext(Single.just(news));
                     }
                 });
     }
