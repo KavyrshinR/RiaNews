@@ -36,8 +36,10 @@ public class NewsListPresenter extends BasePresenter<NewsListView> {
                     .subscribeWith(new DisposableSingleObserver<List<Category>>() {
                         @Override
                         public void onSuccess(List<Category> categories) {
-                            getViewState().showCategories(categories);
-                            getCategorizedNewsById(categories.get(0).getId());
+                            if (!categories.isEmpty()) {
+                                getViewState().showCategories(categories);
+                                getCategorizedNewsById(categories.get(0).getId());
+                            }
                         }
 
                         @Override
@@ -55,7 +57,9 @@ public class NewsListPresenter extends BasePresenter<NewsListView> {
                 .subscribeWith(new DisposableSingleObserver<List<News>>() {
                     @Override
                     public void onSuccess(List<News> news) {
-                        getViewState().showNews(news);
+                        if (!news.isEmpty()) {
+                            getViewState().showNews(news);
+                        }
                     }
 
                     @Override
